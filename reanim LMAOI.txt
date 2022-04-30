@@ -264,6 +264,74 @@ while true do wait( )
 
 -- End fling part
 
+-- Start Fling Part
+Character.HumanoidRootPart:ClearAllChildren()
+Instance.new("Attachment", Character.HumanoidRootPart)
+Instance.new("Attachment", CloneChar.HumanoidRootPart)
+ FlingPower = Instance.new("AlignPosition", Character.HumanoidRootPart)
+FlingPower.MaxForce = 2e37
+FlingPower.Responsiveness = 200
+FlingPower.Attachment0 = Character.HumanoidRootPart.Attachment
+FlingPower.Attachment1 = CloneChar.HumanoidRootPart.Attachment
+ FlingPower2 = Instance.new("AlignOrientation", Character.HumanoidRootPart)
+FlingPower2.MaxTorque = 2e37
+FlingPower2.Responsiveness = 200
+FlingPower2.Attachment0 = Character.HumanoidRootPart.Attachment
+FlingPower2.Attachment1 = CloneChar.HumanoidRootPart.Attachment
+getgenv().ShardAPI = {}
+getgenv().FlingPart = Instance.new("Part", workspace)
+getgenv().FlingPart.CanCollide = false
+getgenv().FlingPart.Transparency = 1
+getgenv().Anchored = true
+Instance.new("Attachment", FlingPart)
+Instance.new("Attachment", CloneChar.HumanoidRootPart)
+function ShardAPI:Fling(target, duration, copevel)
+    local predict = copevel or false --enable target prediction (unstable)
+    local dur = duration or 0.5
+    coroutine.wrap(function()
+    if not target then
+        warn("<ShardAPI> Cannot fling, no target given")
+        return
+    end
+    if typeof(target) == "Vector3" or (typeof(target) == "Instance" and target:IsA("BasePart")) then
+    else
+        warn("<ShardAPI> Invalid target type (" .. typeof(target) .. ")")
+        return
+    end
+     hrp = Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then
+        warn("<ShardAPI> You dont have a HumanoidRootPart!")
+    end
+    pcall(function()
+        hrp.SelectionBox:Destroy()
+    end)
+    local IsFling = Instance.new("SelectionBox", hrp)
+    IsFling.Adornee = hrp
+    IsFling.Color3 = Color3.new(1,1,1)
+    IsFling.LineThickness = 0.05
+    hrp.AlignPosition.Attachment1 = FlingPart.Attachment
+    for i = 1,dur*60 do
+		game.RunService.Stepped:wait()
+        if typeof(target) ~= "Vector3" then
+			FlingPart.Position = target.Position
+		else
+			FlingPart.Position = target
+        end
+        FlingPart.Velocity = Vector3.new()
+        hrp.Velocity = Vector3.new()
+        hrp.RotVelocity = Vector3.new(1,1,1)*2e9
+        if IsFling.Parent == nil then return end
+    end
+    IsFling:Destroy()
+    hrp.AlignPosition.Attachment1 = CloneChar.HumanoidRootPart.Attachment
+    end)()
+end
+
+getgenv().NullwareFling = function(...)
+    return ShardAPI:Fling(...)
+end
+
+
 -- some reset stuff
 
 
