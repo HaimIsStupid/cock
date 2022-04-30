@@ -1,0 +1,281 @@
+
+
+
+
+
+
+game.Players:Chat("-gh 7214365136,7214365136,7214365136,7214365136,7214365136,7214365136")
+
+
+wait(4)
+plr = game:GetService("Players").LocalPlayer
+char = plr.Character 
+
+char["Sword"].Name = "1"
+char["Sword"].Name = "2"
+char["Sword"].Name = "3"
+char["Sword"].Name = "4"
+char["Sword"].Name = "5"
+char["Sword"].Name = "6"
+wait(4)
+
+local vel = Vector3.new(0,30,0)
+local Perma = true -- false if u want without permadeath (still in progress)
+local AntiVoid = true -- if u want to get like back to ur place instead of just being in an endless void LOL
+
+
+
+if AntiVoid == true then 
+    
+    workspace.FallenPartsDestroyHeight = workspace.FallenPartsDestroyHeight
+    
+    else
+workspace.FallenPartsDestroyHeight = 0/0
+
+end
+
+
+settings().Physics.AllowSleep = false
+settings().Physics.PhysicsEnvironmentalThrottle = Enum.EnviromentalPhysicsThrottle.Disabled
+ 
+
+
+local plr = game.Players.LocalPlayer 
+
+game:GetService('RunService').Heartbeat:Connect(function()
+	plr.MaximumSimulationRadius = 1000
+	sethiddenproperty(plr, 'SimulationRadius', 1000)
+end)
+local Character = plr.Character
+Character.Archivable = true
+
+
+local clonechar = plr.Character:Clone()
+clonechar.Name = "clonechar"
+
+clonechar.Humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+clonechar.HumanoidRootPart.CFrame = Character.HumanoidRootPart.CFrame * CFrame.new(0,0,3)
+
+
+local function Align(p1,p2)
+     A1 = Instance.new("Attachment", p1) 
+     A2 = Instance.new("Attachment", p2)
+     A1.Position =  Vector3.new() 
+     A1.Orientation =  Vector3.new() 
+     Mover = Instance.new("AlignPosition", p1)
+     Mover.RigidityEnabled = false
+    Mover.Attachment0 = A1
+    Mover.Attachment1 = A2
+    Mover.Responsiveness = 200
+    Mover.MaxVelocity = math.huge
+    Mover.MaxForce = math.huge
+     Rotater = Instance.new("AlignOrientation", p1)
+     Rotater.RigidityEnabled = false
+    Rotater.Attachment0 = A1
+    Rotater.Attachment1 = A2
+    Rotater.Responsiveness = 200
+    Rotater.MaxAngularVelocity = math.huge
+    Rotater.MaxTorque = math.huge
+end
+
+
+
+
+clonechar.Head.face.Transparency = 1
+--Character.Head.face:remove()
+for _,v in ipairs(clonechar:GetDescendants()) do
+	if v:IsA('BasePart') or v:IsA('Part') then
+		v.Transparency = 1
+	end
+end
+
+plr.Character = clonechar
+clonechar.Parent = workspace
+Character.Parent = clonechar
+if Perma == true then 
+task.wait(Game:GetService("Players").RespawnTime + .95)
+Character.Humanoid:ChangeState(Enum.HumanoidStateType.Dead)
+end
+
+workspace.CurrentCamera.CameraSubject = clonechar.Humanoid
+
+
+
+game:GetService('RunService').Stepped:Connect(function()
+	for _,v in ipairs(clonechar:GetChildren()) do
+		if v:IsA('BasePart') then
+			v.CanCollide = false
+		end
+	end
+	for _,v in ipairs(Character:GetChildren()) do
+		if v:IsA('BasePart') then
+			v.CanCollide = false
+		end
+	end
+end)
+
+
+for i,v in pairs  (Character:GetChildren()) do
+    if v:IsA("BasePart") and v.Name ~=  "HumanoidRootPart" then 
+        Align(v,clonechar[v.Name])
+        
+    end 
+    if v:IsA("Accessory") then 
+ Align(v.Handle,clonechar[v.Name].Handle)
+    end
+
+end
+function netfullflushed(num,num2,num3,BasePart)
+    
+BasePart.CustomPhysicalProperties = PhysicalProperties.new(0,0,0,0,0)
+
+
+	game:GetService('RunService').Heartbeat:Connect(function()
+		BasePart.Velocity = Vector3.new(num,num2,num3)
+	end)
+end
+
+
+
+
+
+for i,v in pairs(Character:GetDescendants()) do
+if v:IsA("BasePart") then 
+    
+    netfullflushed(30,0,0,v)
+end 
+end
+
+local hats = {}
+
+for i,v in pairs(Character:GetChildren()) do
+    if v:IsA("Accessory") then
+        local done
+        if hats[v.Name] == nil then
+            hats[v.Name] = v
+            done = true
+        end
+        local index = 1
+        if not done then
+            repeat
+                index = index + 1
+            until hats[v.Name..index] == nil
+            hats[v.Name..index] = v
+        end
+    end
+end
+
+local clonehats = {}
+
+for i,v in pairs(clonechar:GetChildren()) do
+    if v:IsA("Accessory") then
+        local done
+        if clonehats[v.Name] == nil then
+            clonehats[v.Name] = v
+            done = true
+        end
+        local index = 1
+        if not done then
+            repeat
+                index = index + 1
+            until clonehats[v.Name..index] == nil
+            clonehats[v.Name..index] = v
+        end
+    end
+end
+
+
+--- taken from LC fuck you 
+
+local antivoid = nil
+local plr = game.Players.LocalPlayer
+local char = plr.Character
+
+local RootPart =char.HumanoidRootPart
+antivoid = Instance.new("Part")
+antivoid.Name = "none"
+antivoid.Size = Vector3.new(400,10,400)
+antivoid.Anchored = true
+antivoid.Transparency = 1
+antivoid.Position = Vector3.new(RootPart.Position.X,workspace.FallenPartsDestroyHeight+5,RootPart.Position.Z)
+antivoid.Parent = workspace
+coroutine.resume(coroutine.create(function()
+
+		swait()
+	
+			if antivoid:IsDescendantOf(workspace) then
+				antivoid.Position = Vector3.new(RootPart.Position.X,workspace.FallenPartsDestroyHeight+5,RootPart.Position.Z)
+			else
+				pcall(function()
+					antivoid:Destroy()
+				end)
+				antivoid = Instance.new("Part")
+				antivoid.Size = Vector3.new(400,10,400)
+				antivoid.Anchored = true
+				antivoid.Transparency = 1
+				antivoid.Position = Vector3.new(RootPart.Position.X,workspace.FallenPartsDestroyHeight+5,RootPart.Position.Z)
+				antivoid.Parent = workspace
+			end
+		
+
+end))
+
+
+
+while true do wait( )
+    for i,v in pairs(char:GetChildren()) do
+			if v:IsA("BasePart") and v.Anchored == false and v.Position.Y < (workspace.FallenPartsDestroyHeight + 50) then
+				local flot = Instance.new("BodyPosition")
+				local spen = Instance.new("BodyGyro")
+				local hu = math.huge
+				flot.MaxForce = Vector3.new(hu,hu,hu)
+				spen.MaxTorque = Vector3.new(hu,hu,hu)
+				local spown = nil
+				for o,b in pairs(workspace:GetDescendants()) do
+					if not b:IsDescendantOf(Character) and b:IsA("SpawnLocation") then
+						spown = b
+					end
+				end
+				if spown then
+					RootPart.CFrame = CFrame.new(spown.Position.X,spown.Position.Y+(spown.Size.Y/2)+6,spown.Position.Z)
+				else
+					local base = workspace:FindFirstChild("Base")
+					if not base then
+						base = workspace:FindFirstChild("Baseplate")
+					end
+					if base then
+						RootPart.CFrame = CFrame.new(math.clamp(RootPart.Position.X,(-base.Size.X/2)+5,(base.Size.X/2)-5),base.Position.Y+(base.Size.Y/2)+6,math.clamp(RootPart.Position.Z,(-base.Size.X/2)+5,(base.Size.X/2)-5))
+					else
+						RootPart.CFrame = CFrame.new(math.clamp(RootPart.Position.X,-100,100),30,math.clamp(RootPart.Position.Z,-100,100))
+					end
+				end
+				flot.Position = RootPart.Position
+				flot.Parent = RootPart
+				spen.CFrame = RootPart.CFrame
+				spen.Parent = RootPart
+				game:GetService("Debris"):AddItem(flot,1)
+				game:GetService("Debris"):AddItem(spen,1)
+			end
+		end
+    
+    end
+
+
+
+-- End fling part
+
+-- some reset stuff
+
+
+
+local dead
+local resetBind = Instance.new('BindableEvent')
+resetBind.Event:Connect(function()
+	dead = true
+	plr.Character = Character
+	Character.Humanoid:Destroy()
+	clonechar:Destroy()
+	game:GetService('StarterGui'):SetCore('ResetButtonCallback', true)
+end)
+game:GetService('StarterGui'):SetCore('ResetButtonCallback', resetBind)
+
